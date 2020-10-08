@@ -22,12 +22,13 @@ def ping_status():
         status = " Network is DOWN"
     return status
 
+status = ping_status()
+
 def run_test():
     while True:
         now = datetime.datetime.now()
         # easy to read date/time format
         timestamp = now.strftime('%m-%d-%Y %H:%M:%S %p')
-        status = ping_status()
         print(timestamp + status + " to " + ip)
         time.sleep( 2 )
         f = open ('UptimeSensorfile.txt', 'a')
