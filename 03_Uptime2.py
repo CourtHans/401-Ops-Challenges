@@ -11,16 +11,14 @@ import datetime, time, os
 from getpass import getpass
 
 # Declare variables
-
-#email = input("Enter your email: ")
-email = 'afinch8675309@gmail.com'
-ip = '10.0.0.154'
-password = getpass()
-# reference: https://stackoverflow.com/questions/9202224/getting-command-line-password-input-in-python
 up = " Network is ACTIVE"
 down = " Network is DOWN"
 last = 0
 ping_result = 0
+email = input("Enter your email: ")
+password = getpass()
+# reference: https://stackoverflow.com/questions/9202224/getting-command-line-password-input-in-python
+ip = input("What address would you like to monitor?")
 
 # Declare functions
 
