@@ -9,7 +9,6 @@
 from cryptography.fernet import Fernet
 
 # Declare variables
-y_n = "y"
 
 # Declare functions
 def write_key():
@@ -19,18 +18,29 @@ def write_key():
     key = Fernet.generate_key()
     with open("key.key", "wb") as key_file:
         key_file.write(key)
+        return key
 
 def load_key():
     """
     Loads the key from the current directory named `key.key`
     """
-    return open("key.key", "rb").read()
+    try:
+        return open("key.key", "rb").read()
+    except:
+        return None
+
+# function to write key only if it's not already there
+def if_key():
+    key = load_key()
+    if key == None:
+        key = write_key()
+    return Fernet(key)
 
 def encrypt_message():
     user_message = input("What message would you like to encrypt? ")
     message_e = user_message.encode()
     # initialize the Fernet class
-    f = Fernet(key)
+    f = if_key()
     # encrypt the message
     encrypted = f.encrypt(message_e)
     print("Your encrypted message:")
@@ -39,7 +49,7 @@ def encrypt_message():
 def decrypt_message():
     user_input = input("What message would you like to decrypt? ")
     message_d = str.encode(user_input)
-    f = Fernet(key)
+    f = if_key()
     # decrypt the message
     decrypted = f.decrypt(message_d)
     # remove the 'b' and extra ""
@@ -47,7 +57,7 @@ def decrypt_message():
     print(str(decrypted)[2:-1])
 
 def encrypt_file():
-    f = Fernet(key)
+    f = if_key()
     filename = input("Please enter the full filepath for the file you wish to encrypt? ")
     with open(filename, "rb") as file:
         #read file data
@@ -59,7 +69,7 @@ def encrypt_file():
         file.write(encrypted_file)
 
 def decrypt_file():
-    f = Fernet(key)
+    f = if_key()
     filename = input("Please enter the full filepath for the file you wish to decrypt? ")
     with open(filename, "rb") as file:
         # read the encrypted data
@@ -88,16 +98,11 @@ def ask_user():
         encrypt_message()
     elif (mode == "4"):
         decrypt_message()
-    elif ((mode != "1") and (mode != "2") and (mode !="3") and (mode !="4")):
+    else:
         print("Invalid selection...")
 
+
 # Main
-
-# generate and write a new key (really only needed for first run)
-write_key()
-
-# load the previously generated key
-key = load_key()
 
 while True:
     ask_user()
