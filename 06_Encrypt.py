@@ -3,9 +3,7 @@
 # Script:                   401 Op Challenge Day 6
 # Author:                   Courtney Hans
 # Date of latest revision:  10/12/20
-# Purpose:                  Encryption 1 of 3
-
-#import pdb; pdb.set_trace()
+# Purpose:                  Encryption/decryption menu (file or message)
 
 # Import libraries
 from cryptography.fernet import Fernet
@@ -73,7 +71,13 @@ def decrypt_file():
         file.write(decrypted_info)
 
 def ask_user():
-    mode = input("\nWhat would you like to do? \nMode 1 - Encrypt a file \nMode 2 - Decrypt a file \nMode 3 - Encrypt a message \nMode 4 - Decrypt a message \n\nPlease enter a number: ")
+    mode = input("\nWhat would you like to do?\
+    \nMode 1 - Encrypt a file\
+    \nMode 2 - Decrypt a file\
+    \nMode 3 - Encrypt a message\
+    \nMode 4 - Decrypt a message\
+    \n\
+    \nPlease enter a number: ")
     if (mode== "1"):
         encrypt_file()
         print("...file encrypted.")
@@ -101,7 +105,6 @@ while True:
     if y_n == "n":
         print("Have a nice day!")
         break
-
 
 # resource: https://www.thepythoncode.com/article/encrypt-decrypt-files-symmetric-python
 # resource: https://stackoverflow.com/questions/22362165/i-want-to-have-a-yes-no-loop-in-my-code-but-im-having-trouble-doing-it-python
