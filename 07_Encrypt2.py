@@ -200,23 +200,7 @@ def print_dirContents_decrypt():
     dir_count = 0
     file_count = 0 
 
-####may not need this
-def list_filePath(start_path):
-    listOfFile = os.listdir(start_path)
-    completeFileList = list()
-    for file in listOfFile:
-        completePath = os.path.join(start_path, file)
-        if os.path.isdir(completePath):
-            completeFileList = completeFileList + getFiles(completePath)
-        else:
-            completeFileList.append(completePath)
 
-    return completeFileList
-
-
-
-#listOfFiles = list_filePath(start_path)
-#print(listOfFiles)
 
 # Main
 
