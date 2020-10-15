@@ -6,8 +6,6 @@
 # Purpose:                  Menu & execution for encryption (directory, file, string)
 #                           and FULL ransomware and restore
 
-#import pdb; pdb.set_trace()
-
 # Import libraries
 
 from cryptography.fernet import Fernet
