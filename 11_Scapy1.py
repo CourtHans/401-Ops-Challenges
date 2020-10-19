@@ -17,8 +17,8 @@ port_range = [21, 22, 23] # providing a port range
 # Declare functions
 
 # Main
-for dst_port in port_range:
-    src_port = random.randint(1025,65534)
+for dst_port in port_range: # for each port in defined range...
+    src_port = random.randint(1025,65534) # randomize TCP source port
     port_num = str(dst_port)
     response = sr1(IP(dst=host)/TCP(sport=src_port,dport=dst_port,flags="S"),timeout=1,verbose=0)
 
@@ -28,6 +28,7 @@ for dst_port in port_range:
     elif(response.haslayer(TCP)):
         if(response.getlayer(TCP).flags == 0x12): #Port responding and open
             print("Port " + port_num + ": The port is OPEN and responding.")
+            # send RST packet to graciously close connection
             send_rst = sr(IP(dst=host)/TCP(sport=src_port,dport=dst_port,flags="R"),timeout=10)
             print(response)
         elif(response.getlayer(TCP).flags == 0x14): #Port closed
