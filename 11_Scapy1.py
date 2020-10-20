@@ -25,15 +25,16 @@ for dst_port in port_range: # for each port in defined range...
     if response is None:
         print ("Port " + port_num + ": The packet was filtered.")
         print (response)
-    elif(response.haslayer(TCP)):
-        if(response.getlayer(TCP).flags == 0x12): #Port responding and open
+    elif response.haslayer(TCP):
+        if response.getlayer(TCP).flags == 0x12: #Port responding and open
             print("Port " + port_num + ": The port is OPEN and responding.")
             # send RST packet to graciously close connection
             send_rst = sr(IP(dst=host)/TCP(sport=src_port,dport=dst_port,flags="R"),timeout=10)
             print(response)
-        elif(response.getlayer(TCP).flags == 0x14): #Port closed
+        if response.getlayer(TCP).flags == 0x14: #Port closed
             print("Port " + port_num + ": The port is CLOSED.")
             print(response)
+     
 
 # resource: https://resources.infosecinstitute.com/port-scanning-using-scapy/
 # resource: https://stackoverflow.com/questions/20429674/get-tcp-flags-with-scapy
