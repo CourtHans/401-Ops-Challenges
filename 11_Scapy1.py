@@ -21,7 +21,6 @@ for dst_port in port_range: # for each port in defined range...
     src_port = random.randint(1025,65534) # randomize TCP source port
     port_num = str(dst_port)
     response = sr1(IP(dst=host)/TCP(sport=src_port,dport=dst_port,flags="S"),timeout=1,verbose=0)
-
     if response is None:
         print ("Port " + port_num + ": The packet was filtered.")
         print (response)
