@@ -74,30 +74,28 @@ def ping_sweep():
     {hosts_block} are blocking ICMP traffic.
     """) 
 
-def scan_menu():
-    mode = input("""
-    Network scanning tool: what would you like to do?
-    1 - TCP Port Range Scanner
-    2 - ICMP Ping Sweep
-    
-    Please enter a number: 
-    """)
-
-    if (mode == "1"):
-        tcp_port_scan()
-    elif (mode == "2"):
-        ping_sweep()
-    else:
-        print("Invalid selection...")
-
 # Main
 
-while True:
-    scan_menu()
-    y_n = input ("Try again? y/n ")
-    if y_n == "n":
-        print("\nHave a nice day!")
-        break
+if __name__ == "__main__": # when my computer runs this file...do this stuff
+    while True:
+        mode = input("""
+        Network scanning tool: what would you like to do?
+        1 - TCP Port Range Scanner
+        2 - ICMP Ping Sweep
+        3 - Exit
+        Please enter a number: 
+        """)
+
+        if (mode == "1"):
+            tcp_port_scan()
+        elif (mode == "2"):
+            ping_sweep()
+        elif (mode == '3'):
+            break
+        else:
+            print("Invalid selection...")    
+
+
 
 #resource: https://docs.python.org/3.4/howto/ipaddress.html
 #resource: https://thepacketgeek.com/scapy/building-network-tools/part-10/
