@@ -47,9 +47,9 @@ def tcp_port_scan(host, port_range):
             if response.getlayer(TCP).flags == 0x14: #Port closed
                 not_open+=1
     if not_open != 1:
-        print(f"\n{not_open} of your selected ports are either closed or unresponsive.")
+        print(f"{not_open} of your selected ports are either closed or unresponsive.")
     else:
-        print("\nOne of your selected ports is either closed or uresponsive.")
+        print("1 of your selected ports is either closed or unresponsive.")
 
 
 # ARP scan   
