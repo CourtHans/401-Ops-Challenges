@@ -20,6 +20,9 @@ from email.mime.text import MIMEText
 from getpass import getpass
 
 # Declare variables
+auth_email = input("To enable email, please enter authenticator email: ")
+password = getpass(prompt="Password: ")
+dest_email = input("Please DESTINATION email:  ")
 
 user_input = input("Type in the name of a directory located in the home folder:")
 
@@ -34,19 +37,19 @@ def file_crawler(user_input):
         print("==files")
         print(files)
 
-###### Emailing log file ########
+###### Function to email log file as an attachment ########
 def email_logfile():
-    subject = "Logging email"
+    subject = "Log file transmission"
     body = "Logging activity is in the attached file."
-    sender_email = 'afinch8675309@gmail.com'
-    receiver_email = 'afinch8675309@gmail.com'
-    password = getpass(prompt="To email the log file, enter your email password and press enter:")
+    # sender_email = could enter here
+    # receiver_email = could enter here
+    # password = getpass(prompt="Password:  ")
     print('Emailing log file......')
 
     # Create a multipart message and set headers
     message = MIMEMultipart()
-    message["From"] = sender_email
-    message["To"] = receiver_email
+    message["From"] = auth_email
+    message["To"] = dest_email
     message["Subject"] = subject
     # message["Bcc"] = receiver_email  # Recommended for mass emails
 
@@ -78,8 +81,10 @@ def email_logfile():
     # Log in to server using secure context and send email
     context = ssl.create_default_context()
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, text)
+        server.login(auth_email, password)
+        server.sendmail(auth_email, dest_email, text)
+    
+    print("Log file emailed.")
 
 # Main
 
@@ -93,51 +98,49 @@ e_handler.setLevel(logging.ERROR)
 
 # Creating formatters and adding them to handlers respectively
 w_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-e_format = logging.Formatter('%(name)s:%(levelname)s:%(message)s')
+e_format = logging.Formatter('%(levelname)s:%(message)s')
 w_handler.setFormatter(w_format)
 e_handler.setFormatter(e_format)
 
-# KEEPING THIS IN TO CONTINUE TROUBLESHOOTING LATER
-# email_handler = SMTPHandler(
-#     mailhost=('smtp.gmail.com', 587), # had to chanage to 587
-#     fromaddr='afinch8675309@gmail.com',
-#     toaddrs='afinch8675309@gmail.com',
-#     subject='Application Error',
-#     credentials=(EmailAddress, EmailPassword),
-#     secure=None)
+# SMTPHandler
+email_handler = SMTPHandler(
+    mailhost=('smtp.gmail.com', 587), # had to chanage to 587
+    fromaddr=auth_email,
+    toaddrs=dest_email,
+    subject='Script Error!',
+    credentials=(auth_email, password),
+    secure=())
 
-# email_handler.setLevel(logging.ERROR)
+email_handler.setLevel(logging.ERROR)
 
 # adding handlers to the logger
+logger.addHandler(email_handler)
 logger.addHandler(w_handler)
 logger.addHandler(e_handler)
-# logger.addHandler(email_handler)
 
 print('Logging started...\n')
 time.sleep(.5)
 
-
 try:
-    file_crawler(user_input) ## can force intentional error if leave out parameter
+    file_crawler() ## can force intentional error if leave out parameter
 
 except Exception as msg:
    logger.error(msg)
    print("Something went wrong!")
 
-print("\nSee below for an 'error' alert in the console:")
-logger.warning("Warning message...")
-logger.error("Error message...")
+print("\nAny error messages were emailed; all warning AND error messages were logged into a file named infoLog.")
+logger.warning("Generic warning message.")
+# logger.error("Generic error message.")
 
-print('\nLogging completed.')
+print('\nScript completed.')
 
 try:
     email_logfile()
+    print("Script complete")
 
 except KeyboardInterrupt: #graceful exit message if user hits CTRL C
     print('\n[*] User requested an interupt, no email sent [*]')
     sys.exit()
-
-print('Log file emailed. Script complete.')
 
 
 # resource: https://realpython.com/python-send-email/
