@@ -10,20 +10,19 @@
 from sys import platform
 import os, time
 
-# Declare variables
-
 
 # Declare functions
+
+# search a linux os
 def linuxSearch():
-    #test dir /home/osboxes/Desktop
     whichFile = input("What file are you looking for?  ")
     directory = input("Which directory would you like to search?  ")
     print("Here's what I found: \n")
     os.system("find " + str(directory) + ' -name ' + str(whichFile))
     print("")
 
+# search a windows os
 def windowsSearch():
-    #test dir C:\Users\cornt\OneDrive\Desktop
     whichFile = input("What file are you looking for?  ")
     answer = input("Are you in the directory you wish to search? Enter y or n:  ").lower()
     if answer == "y":
@@ -35,10 +34,9 @@ def windowsSearch():
     else:
         print("I'm sorry, that was not a valid input. You'll have to run the script again.")
 
-
 # Main
 
-# to determine OS and run appropriate function
+# determine OS and run appropriate function
 if platform == "linux" or platform == "linux2":
     print("This is a Linux machine!")
     linuxSearch()
