@@ -17,22 +17,25 @@ import os, time
 def linuxSearch():
     whichFile = input("What file are you looking for?  ")
     directory = input("Which directory would you like to search?  ")
-    print("Here's what I found: \n")
+    # count and print number of files searched
+    os.system("ls " + str(directory) + " | echo \"Searched $(wc -l) files.\"")
+    # count and print number of files found
+    os.system("find " + str(directory) + ' -name ' + str(whichFile) + " -print | echo \"Found $(grep -c /) files that matched:\"")
+    print("")
     os.system("find " + str(directory) + ' -name ' + str(whichFile))
     print("")
 
 # search a windows os
 def windowsSearch():
     whichFile = input("What file are you looking for?  ")
-    answer = input("Are you in the directory you wish to search? Enter y or n:  ").lower()
-    if answer == "y":
-        print("Here's what I found: \n")
-        os.system("dir /b/s " + str(whichFile))
-    elif answer == "n":
-        print("Okay, just a moment...")
-        os.system("dir \"\\" + str(whichFile) + "\" /s")
-    else:
-        print("I'm sorry, that was not a valid input. You'll have to run the script again.")
+    directory = input("Which directory would you like to search?  ")
+    # count number of files searched, store in variable
+    searchCount = os.popen("dir /a:-d /s /b " + str(directory) + " | find /c \":\\\"").read()
+    print("Files searched: " + searchCount)
+    # count number of files found, store in variable
+    foundCount = os.popen("dir /b/s " + str(directory) + "\\" + str(whichFile) + " | find /c \":\\\"").read()
+    print("Files found: " + foundCount)
+    os.system("dir /b/s " + str(directory) + "\\" + str(whichFile))
 
 # Main
 
