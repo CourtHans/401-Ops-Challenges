@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-# Script:                   401 Op Challenge Day 32
+# Script:                   401 Op Challenge Day 33
 # Author:                   Courtney Hans
-# Date of latest revision:  11/17/20
-# Purpose:                  File Hasher for Windows and Linux
+# Date of latest revision:  11/18/20
+# Purpose:                  Signature-based Malware Detection file crawler
 
 
 # Import libraries
@@ -18,6 +18,16 @@ def create_timestamp():
     now = datetime.datetime.now()
     timestamp = now.strftime('%m-%d-%Y %H:%M:%S:%f')
     return str(timestamp)
+
+# function to check hash against virustotal
+def malware_check(the_hash):
+    apikey = os.getenv('API_KEY_VIRUSTOTAL') # Set your environment variable before proceeding. You'll need a free API key from virustotal.com so get signed up there first.
+    # hash = '099f4bbdaef65e980748a544faffd9a7' # Set your hash here.
+
+    # This concatenates everything into a working shell statement that gets passed into virustotal-search.py
+    query = 'python3 virustotal-search.py -k ' + apikey + ' -m ' + the_hash
+
+    os.system(query)
 
 # hashing function
 def hash_it(filename):
@@ -34,7 +44,7 @@ def dirContents_hash():
     dir_count = 0
     file_count = 0
     start_path = input("Please enter the absolute path to the directory you want to scan: ")
-    # start_path = "/home/osboxes/Desktop/lab32_dir" # linux test path
+    # start_path = "/home/osboxes/Desktop/lab32_dir/lab32folder" # linux test path
     # start_path = "C:\Users\cornt\OneDrive\Desktop\lab32folder" # windows test path
     for (path,dirs,files) in os.walk(start_path):
         print('DIRECTORY: {:s}'.format(path))
@@ -61,11 +71,12 @@ def dirContents_hash():
             timestamp = create_timestamp()
             print(timestamp)
             print(f"FILENAME: {file}\tSIZE: {str(fsize) + unit}\tPATH: {filename}")
-            print("HASH: " + the_hash + "\n")
+            print(f"Virus scan against hash:")
+            malware_check(the_hash)
+            print("")
 
-           
     # Print total files and directory count
-    print('Summary: hashed {} files in {} directories'.format(file_count,dir_count))
+    print('[*]Summary[*] Files hashed: {}, Directories crawled: {}'.format(file_count,dir_count))
     dir_count = 0
     file_count = 0   
 
