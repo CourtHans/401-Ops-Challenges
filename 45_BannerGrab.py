@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
-# Script:                   401 Op Challenge Day 44
+# Script:                   401 Op Challenge Day 45
 # Author:                   Courtney Hans
-# Date of latest revision:  12/7/20
-# Purpose:                  Port scanning   
+# Date of latest revision:  12/8/20
+# Purpose:                  Enumeration tool 
 
 # Import Libraries
 import nmap, socket
@@ -14,6 +14,7 @@ scanner = nmap.PortScanner()
 
 # Define functions
 
+# nmap 'stealth' TCP SYN scan
 def syn_ack():
     range = input("Enter port range (e.g. 1-50): ")
     print("Nmap Version: ", scanner.nmap_version())
@@ -23,6 +24,7 @@ def syn_ack():
     print("protocols: ", scanner[host].all_protocols())
     print("Open Ports: ", scanner[host]['tcp'].keys())
 
+# namp UDP scan
 def udp_scan():
     range = input("Enter port range (e.g. 1-50): ")
     print("Nmap Version: ",scanner.nmap_version())
@@ -32,10 +34,12 @@ def udp_scan():
     print("protocols: ", scanner[host].all_protocols())
     print("Open Ports: ", scanner[host]['udp'].keys())
 
+# nmap OS scan
 def os_system():
     print("Nmap Version: ",scanner.nmap_version())
     print(scanner.scan(host, arguments='-O')['scan'][host]['osmatch'][0])
 
+# Is specific port up or down?
 def portScanner(host):
     port = input("Please specify port:  ")
     port = int(port)
@@ -48,6 +52,7 @@ def portScanner(host):
     else:
         print("Port CLOSED")
 
+# Grab banner for specific port
 def bannergrab(host):
     port = input("Please specify port:  ")
     port = int(port)
@@ -59,7 +64,6 @@ def bannergrab(host):
     sockmod.close()
 
 ### Menu of options ###
-
 def menu():
     resp = input("""\nSelect scan to execute (enter number):
                     1) SYN ACK Scan
@@ -89,9 +93,8 @@ print("Enumeration Station")
 print("--------------------")
 host = input("IP address to scan: ")
 type(host)
-# range = input("Enter port range (e.g. 1-50): ")
 
-
+# Loop through menu of options until user decides to quit
 while True:
     menu()
     y_n = input ("Try again? y/n ")
