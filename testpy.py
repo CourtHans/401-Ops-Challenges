@@ -3,6 +3,6 @@
 #Script:    Tester
 #Purpose:   Test only
 
-print "Hello World"
+print ("Hello World")
 
 #End
